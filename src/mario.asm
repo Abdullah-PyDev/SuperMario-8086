@@ -114,6 +114,13 @@ start:
     push word 1000         ; Y coordinate
     push word 160         ; X coordinate
     call PutPixel
+    
+    push word COLOR_BRICK
+    push word 30
+    push word 100
+    push word 40
+    push word 50
+    call FillRect
 
     ; Wait for a keyboard key press
     ; This keeps the graphics screen visible
@@ -200,3 +207,61 @@ PutPixel:
     ; Remove the three word parameters
     ; from the stack and return
     ret 6
+
+
+FillRect:
+    push bp
+    mov bp, sp
+
+    push ax
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+
+    ; Ignore rectangles with zero width or height
+    cmp word [bp+8], 0
+    je .done
+
+    cmp word [bp+10], 0
+    je .done
+
+    ; Start at the given Y coordinate
+    mov di, [bp+6]
+
+    ; Number of rows
+    mov dx, [bp+10]
+
+.y_loop:
+    ; Start at the given X coordinate
+    mov si, [bp+4]
+
+    ; Number of pixels in this row
+    mov cx, [bp+8]
+
+.x_loop:
+    ; Call PutPixel(x, y, colour)
+    push word [bp+12]
+    push di
+    push si
+    call PutPixel
+
+    inc si
+    dec cx
+    jnz .x_loop
+
+    ; Move to next row
+    inc di
+    dec dx
+    jnz .y_loop
+
+.done:
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    pop bp
+    ret 10
