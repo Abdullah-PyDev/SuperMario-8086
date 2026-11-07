@@ -94,19 +94,109 @@ game_time           dw STARTING_TIME
 ; PROGRAM ENTRY
 
 start:
-
-    ; Set data segment
+    ; Initialize DS with the program's code segment
     push cs
     pop ds
 
-    ; Set extra segment
-    push cs
-    pop es
+    ; Switch display to VGA Mode 13h
+    ; Resolution: 320 x 200 pixels
+    ; Colour depth: 256 colours
+    mov ax, 0013h
+    int 10h
 
-    ; Return to text mode
+    ; Set ES to VGA video memory segment
+    ; All pixel drawing operations will use this segment
+    mov ax, 0A000h
+    mov es, ax
+
+    ; Draw a hero-coloured pixel at screen centre
+    push word COLOR_HERO  ; Colour parameter
+    push word 1000         ; Y coordinate
+    push word 160         ; X coordinate
+    call PutPixel
+
+    ; Wait for a keyboard key press
+    ; This keeps the graphics screen visible
+    mov ah, 00h
+    int 16h
+
+    ; Restore the normal 80 x 25 text display
     mov ax, 0003h
     int 10h
 
-    ; Exit to DOS
+    ; Terminate the program and return to DOS
     mov ax, 4C00h
     int 21h
+
+
+; ==========================================
+; Procedure: PutPixel
+;
+; Purpose:
+; Draws a single pixel at a specified
+; screen coordinate using a given colour.
+;
+; Input parameters (stack):
+; x       - Horizontal screen coordinate
+; y       - Vertical screen coordinate
+; colour  - VGA colour index
+;
+; Output:
+; One pixel is drawn on the screen.
+
+PutPixel:
+    ; Save the base pointer and establish
+    ; a reference point for stack parameters
+    push bp
+    mov bp, sp
+
+    ; Preserve registers used by this procedure
+    push ax
+    push bx
+    push dx
+    ;We must check if (x,y) if x and y are valid screen coordinate
+    ; Check X boundary
+    cmp word [bp+4], SCREEN_WIDTH
+    jae .done
+
+    ; Check Y boundary
+    cmp word [bp+6], SCREEN_HEIGHT
+    jae .done
+
+
+    ; Get the Y coordinate from the stack
+    mov bx, [bp+6]
+
+    ; Make a copy of Y for the second calculation
+    mov dx, bx
+
+    ; Calculate Y * 256
+    shl bx, 8
+
+    ; Calculate Y * 64
+    shl dx, 6
+
+    ; Add both results to calculate Y * 320
+    add bx, dx
+
+    ; Add X to get the final video memory offset
+    ; Offset = (Y * 320) + X
+    add bx, [bp+4]
+
+    ; Get the colour parameter
+    mov ax, [bp+8]
+
+    ; Write the colour index into video memory
+    ; ES points to segment A000h
+    mov [es:bx], al
+
+.done:
+    ; Restore the original register values
+    pop dx
+    pop bx
+    pop ax
+    pop bp
+
+    ; Remove the three word parameters
+    ; from the stack and return
+    ret 6
