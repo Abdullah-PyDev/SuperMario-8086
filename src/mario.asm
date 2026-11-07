@@ -109,17 +109,67 @@ start:
     mov ax, 0A000h
     mov es, ax
 
-    ; Draw a hero-coloured pixel at screen centre
-    push word COLOR_HERO  ; Colour parameter
-    push word 1000         ; Y coordinate
-    push word 160         ; X coordinate
-    call PutPixel
     
-    push word COLOR_BRICK
+
+    ; Row 1: Sky, Ground, Brick, Pipe
+
+    push word COLOR_SKY
+    push word 25
+    push word 60
     push word 30
-    push word 100
-    push word 40
-    push word 50
+    push word 10
+    call FillRect
+
+    push word COLOR_GROUND
+    push word 25
+    push word 60
+    push word 30
+    push word 85
+    call FillRect
+
+    push word COLOR_BRICK
+    push word 25
+    push word 60
+    push word 30
+    push word 160
+    call FillRect
+
+    push word COLOR_PIPE
+    push word 25
+    push word 60
+    push word 30
+    push word 235
+    call FillRect
+
+
+    ; Row 2: Hero, Enemy, Text, HUD
+
+    push word COLOR_HERO
+    push word 25
+    push word 60
+    push word 70
+    push word 10
+    call FillRect
+
+    push word COLOR_ENEMY
+    push word 25
+    push word 60
+    push word 70
+    push word 85
+    call FillRect
+
+    push word COLOR_TEXT
+    push word 25
+    push word 60
+    push word 70
+    push word 160
+    call FillRect
+
+    push word COLOR_HUD
+    push word 25
+    push word 60
+    push word 70
+    push word 235
     call FillRect
 
     ; Wait for a keyboard key press
