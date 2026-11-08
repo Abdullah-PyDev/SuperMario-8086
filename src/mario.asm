@@ -31,6 +31,12 @@ start:
     push word 0
     call DrawMap
 
+    push word 20
+    call DrawMap
+
+    push word 40
+    call DrawMap
+
     ; Wait for a keyboard key press
     ; This keeps the graphics screen visible
     mov ah, 00h
