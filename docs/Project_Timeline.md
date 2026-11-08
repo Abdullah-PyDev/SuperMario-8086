@@ -11,7 +11,7 @@
 
 | | Member 1 | Member 2 |
 |---|---|---|
-| **Name / Roll no.** | *to be filled* | *to be filled* |
+| **Name / Roll no.** | *Abdullah Shafiq* | *Nawal Ali* |
 | **Focus** | Screen, graphics, map, camera, HUD, menus | Input, timing, physics, collisions, enemies, blocks, restart/exit |
 | **Modules** | 1, 2, 3, 4, 5, 6, 13, 14 | 7, 8, 9, 10, 11, 12, 15 |
 | **Shared** | Integration, testing, README, report | Integration, testing, README, report |
