@@ -7,6 +7,7 @@ jmp start
 %include "src/data/levels.asm"
 %include "src/modules/drawing.asm"
 %include "src/modules/map.asm"
+%include "src/data/sprites.asm"
 
 ; PROGRAM ENTRY
 
@@ -31,12 +32,26 @@ start:
     push word 0
     call DrawMap
 
-    push word 20
-    call DrawMap
-
+    ; Mario 1
+    push word 0
+    push word small_mario_stand
     push word 40
-    call DrawMap
+    push word 240
+    call DrawSprite
 
+    ; Mario 2
+    push word 0
+    push word small_mario_stand
+    push word 80
+    push word 140
+    call DrawSprite
+
+    ; Mario 3
+    push word 0
+    push word small_mario_stand
+    push word 120       ; Y
+    push word 60        ; X
+    call DrawSprite
     ; Wait for a keyboard key press
     ; This keeps the graphics screen visible
     mov ah, 00h

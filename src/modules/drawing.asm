@@ -127,3 +127,131 @@ FillRect:
     pop ax
     pop bp
     ret 10
+
+
+; ============================================
+; DrawSprite
+;
+; Purpose:
+; Draws a sprite at the given screen position.
+;
+; Inputs (stack):
+;   x       - horizontal position
+;   y       - vertical position
+;   address - sprite data address
+;   flags   - drawing options
+;
+; Output:
+;   Sprite drawn to VGA memory.
+;
+; ============================================
+; ============================================
+; Procedure: DrawSprite
+;
+; Purpose:
+; Draws a 16x16 sprite at the given position.
+;
+; Stack parameters:
+;   [bp+4]  = X coordinate
+;   [bp+6]  = Y coordinate
+;   [bp+8]  = Sprite address
+;   [bp+10] = Flags (reserved for now)
+;
+; Transparent pixels are skipped.
+; Pixels outside the screen are skipped.
+;
+; ============================================
+
+DrawSprite:
+
+    push bp
+    mov bp, sp
+
+    ; Preserve registers
+    push ax
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+
+    ; SI points to the sprite data
+    mov si, [bp+8]
+
+    ; Starting Y coordinate
+    mov dx, [bp+6]
+
+    ; Start at row zero
+    xor di, di
+
+.row_loop:
+
+    ; Reset X for every new row
+    mov bx, [bp+4]
+
+    ; Start at column zero
+    xor cx, cx
+
+.column_loop:
+
+    ; Read one pixel from sprite data
+    mov al, [si]
+    inc si
+
+    ; Skip transparent pixels
+    cmp al, COLOR_TRANSPARENT
+    je .next_pixel
+
+    ; Check left boundary
+    cmp bx, 0
+    jl .next_pixel
+
+    ; Check right boundary
+    cmp bx, SCREEN_WIDTH
+    jge .next_pixel
+
+    ; Check top boundary
+    cmp dx, 0
+    jl .next_pixel
+
+    ; Check bottom boundary
+    cmp dx, SCREEN_HEIGHT
+    jge .next_pixel
+
+    ; Draw the pixel using PutPixel
+    xor ah, ah
+
+    push ax
+    push dx
+    push bx
+    call PutPixel
+
+.next_pixel:
+
+    ; Move to next column
+    inc bx
+    inc cx
+
+    cmp cx, SPRITE_WIDTH
+    jb .column_loop
+
+    ; Move to next row
+    inc dx
+    inc di
+
+    cmp di, SPRITE_HEIGHT_SMALL
+    jb .row_loop
+
+.done:
+
+    ; Restore registers
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    pop bp
+
+    ; Remove four word parameters
+    ret 8

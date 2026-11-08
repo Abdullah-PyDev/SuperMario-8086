@@ -51,3 +51,14 @@ STATE_WIN           equ 5
 STATE_LEVEL_COMPLETE equ 6
 STATE_GAME_OVER     equ 7
 STATE_EXIT          equ 8
+
+; Sprite dimensions
+SPRITE_WIDTH        equ 16
+SPRITE_HEIGHT_SMALL equ 16
+SPRITE_HEIGHT_SUPER equ 32
+
+; Mario sprite colours
+COLOR_OVERALL       equ 1
+COLOR_SKIN          equ 6
+COLOR_MOUSTACHE     equ 4
+COLOR_SHOES         equ 4
