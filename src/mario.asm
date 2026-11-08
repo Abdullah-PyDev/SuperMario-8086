@@ -138,7 +138,7 @@ times 9 db 0
 db 3
 times 4 db 0
 db 3
-times 25 db 0
+times 24 db 0
 
 ; Row 7 - Top of the 3-tile-high pipe
 times 25 db 0
